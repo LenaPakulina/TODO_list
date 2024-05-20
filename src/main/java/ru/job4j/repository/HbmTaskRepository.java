@@ -61,7 +61,7 @@ public class HbmTaskRepository implements TaskRepository {
             session.beginTransaction();
             answer = session.createQuery(
                             "UPDATE Task SET description = :fDesk, done = :fDone WHERE id = :fId")
-                    .setParameter("fName", task.getDescription())
+                    .setParameter("fDesk", task.getDescription())
                     .setParameter("fDone", task.isDone())
                     .setParameter("fId", task.getId())
                     .executeUpdate() > 0;
@@ -99,12 +99,38 @@ public class HbmTaskRepository implements TaskRepository {
         Session session = sf.openSession();
         try {
             session.beginTransaction();
-            Query<Task> query = session.createQuery("from Task", Task.class);
+            Query<Task> query = session.createQuery("from Task ORDER BY id ASC", Task.class);
             answer = query.getResultList();
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            System.out.println(e.getMessage());
+        } finally {
+            session.close();
+        }
+        return answer;
+    }
+
+    @Override
+    public Collection<Task> findDoneTasks() {
+        return findTaskByStatus(true);
+    }
+
+    @Override
+    public Collection<Task> findNewTasks() {
+        return findTaskByStatus(false);
+    }
+
+    private Collection<Task> findTaskByStatus(boolean isDone) {
+        List<Task> answer = new LinkedList<>();
+        Session session = sf.openSession();
+        try {
+            session.beginTransaction();
+            Query<Task> query = session.createQuery("from Task WHERE done = :fDone ORDER BY id ASC", Task.class)
+                    .setParameter("fDone", isDone);
+            answer = query.getResultList();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
         } finally {
             session.close();
         }

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <script th:src="@{/js/jquery-3.7.0.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/font/bootstrap-icons.css}">
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <title>Просмотр задачи</title>
+</head>
+<body>
+<div class="container-fluid p-0">
+    <header th:insert="~{blocks/header :: header}"></header>
+    <div class="container my-4">
+        <div th:object="${task}">
+            <div class="row mb-3">
+                <div class="col-auto">
+                    <div class="mx-1 container">
+                        <div class="row">
+                            <span class="font-weight-bold">Номер задачи:&nbsp;</span>
+                            <span class="font-weight-bold" th:text="*{id}"></span>
+                        </div>
+                        <div class="row">
+                            <span class="font-weight-bold">Состояние:&nbsp;</span>
+                            <div class="font-weight-bold text-success" th:if="${task.done}">Выполнено</div>
+                            <div class="font-weight-bold text-primary" th:unless="${task.done}">Не выполнено</div>
+                        </div>
+                        <div class="row">
+                            <span class="font-weight-bold">Время создания:&nbsp;</span>
+                            <span th:text="*{{created}}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <blockquote class="blockquote">
+                    <p class="mb-0 text-justify" th:text="*{description}"></p>
+                </blockquote>
+            </div>
+            <div class="row my-5">
+                <div class="col-auto text-center btn-group">
+                    <a class="mb-3 btn btn-outline-secondary mx-1" th:href=" @{/}"> К списку </a>
+                    <a class="mb-3 btn btn-outline-primary" th:href=" @{/task/add}"> Создать еще задачу </a>
+                </div>
+                <div class="mx-3 col-1"></div>
+                <div class="col-auto align-items-end btn-group">
+                    <a class="mb-3 btn btn-outline-secondary" th:href="@{/task/delete/{id}(id=${task.id})}">Удалить</a>
+                    <a class="mb-3 btn btn-outline-primary mx-1" th:href="@{/task/edit/{id}(id=${task.id})}">Редактировать</a>
+
+                    <a class="mb-3 btn btn-secondary" th:href="@{/task/switch/{id}(id=${task.id})}" th:if="${task.done}">Не выполнено</a>
+                    <a class="mb-3 btn btn-success" th:href="@{/task/switch/{id}(id=${task.id})}" th:unless="${task.done}">Выполнено</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer th:insert="~{blocks/footer :: footer}"></footer>
+</div>
+</body>
+</html>
