@@ -27,7 +27,7 @@ ___
 `mvn exec:java -Dexec.mainClass=ru.job4j.Main`
 
 + В браузере открыть
-http://localhost:8080/
+http://localhost:8080/tasks
 
 **Виды.**
 
@@ -36,15 +36,15 @@ http://localhost:8080/
   все задания, только выполненные или только новые.
 - ![1.PNG](src%2Fmain%2Fresources%2Fstatic%2Fimage%2Fscreenshot%2F1.PNG)
 
-- http://localhost:8080/task/add
+- http://localhost:8080/tasks/add
 - "Добавить задание".
 - ![4.PNG](src%2Fmain%2Fresources%2Fstatic%2Fimage%2Fscreenshot%2F4.PNG)
 
-- http://localhost:8080/task/{id}
+- http://localhost:8080/tasks/{id}
 - Страница с подробным описанием задания.
 - Кнопки: "Выполнено", "Редактировать", "Удалить".
 - ![2.PNG](src%2Fmain%2Fresources%2Fstatic%2Fimage%2Fscreenshot%2F2.PNG)
 
-- http://localhost:8080/task/edit/{id}
+- http://localhost:8080/tasks/edit/{id}
 - Кнопка "Редактировать" переводит пользователя на отдельную страницу для редактирования.
 - ![3.PNG](src%2Fmain%2Fresources%2Fstatic%2Fimage%2Fscreenshot%2F3.PNG)
