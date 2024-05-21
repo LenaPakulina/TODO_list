@@ -60,10 +60,31 @@ public class HbmTaskRepository implements TaskRepository {
         try {
             session.beginTransaction();
             answer = session.createQuery(
-                            "UPDATE Task SET description = :fDesk, done = :fDone WHERE id = :fId")
+                            "UPDATE Task SET description = :fDesk, done = :fDone, title = :fTitle WHERE id = :fId")
                     .setParameter("fDesk", task.getDescription())
                     .setParameter("fDone", task.isDone())
+                    .setParameter("fTitle", task.getTitle())
                     .setParameter("fId", task.getId())
+                    .executeUpdate() > 0;
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
+        }
+        return answer;
+    }
+
+    @Override
+    public boolean switchStatusDone(int id, boolean done) {
+        Session session = sf.openSession();
+        boolean answer = false;
+        try {
+            session.beginTransaction();
+            answer = session.createQuery(
+                            "UPDATE Task SET done = :fDone WHERE id = :fId")
+                    .setParameter("fDone", done)
+                    .setParameter("fId", id)
                     .executeUpdate() > 0;
             session.getTransaction().commit();
         } catch (Exception e) {

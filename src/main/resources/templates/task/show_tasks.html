@@ -52,7 +52,7 @@
                         </span>
                         </td>
                         <td th:text="${task.created}"/>
-                        <td><a th:text="${task.description}" th:href="@{/task/{id}(id=${task.id})}"></a></td>
+                        <td><a th:text="${task.title}" th:href="@{/task/{id}(id=${task.id})}"></a></td>
                     </tr>
                     </tbody>
                 </table>

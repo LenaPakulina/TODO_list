@@ -44,13 +44,8 @@ public class TaskController {
 
     @PostMapping("task/add")
     public String create(@ModelAttribute Task task, Model model) {
-        try {
-            taskService.save(task);
-            return "redirect:/tasks";
-        } catch (Exception exception) {
-            model.addAttribute("message", exception.getMessage());
-            return "errors/404";
-        }
+        taskService.save(task);
+        return "redirect:/tasks";
     }
 
     @GetMapping("/task/{id}")
@@ -66,17 +61,12 @@ public class TaskController {
 
     @PostMapping("/task/update")
     public String update(@ModelAttribute Task task, Model model) {
-        try {
-            var isUpdated = taskService.update(task);
-            if (!isUpdated) {
-                model.addAttribute("message", "Заявка с указанным идентификатором не найдена.");
-                return "errors/404";
-            }
-            return "redirect:/tasks";
-        } catch (Exception exception) {
-            model.addAttribute("message", exception.getMessage());
+        var isUpdated = taskService.update(task);
+        if (!isUpdated) {
+            model.addAttribute("message", "Заявка с указанным идентификатором не найдена.");
             return "errors/404";
         }
+        return "redirect:/tasks";
     }
 
     @GetMapping("/task/delete/{id}")
@@ -89,16 +79,13 @@ public class TaskController {
         return "redirect:/tasks";
     }
 
-    @GetMapping("task/switch/{id}")
-    public String switchStatus(Model model, @PathVariable int id) {
-        var answer = taskService.findById(id);
-        if (answer.isEmpty()) {
+    @GetMapping("task/switch/{id}/{done}")
+    public String switchStatus(Model model, @PathVariable int id, @PathVariable boolean done) {
+        var isSuccess = taskService.switchStatusDone(id, done);
+        if (!isSuccess) {
             model.addAttribute("message", "Заявка с указанным идентификатором не найдена.");
             return "errors/404";
         }
-        Task task = answer.get();
-        task.setDone(!task.isDone());
-        taskService.update(task);
         return "redirect:/tasks";
     }
 
@@ -115,16 +102,11 @@ public class TaskController {
 
     @PostMapping("/task/edit")
     public String edit(@ModelAttribute Task task, Model model) {
-        try {
-            var isUpdated = taskService.update(task);
-            if (!isUpdated) {
-                model.addAttribute("message", "Заявка с указанным идентификатором не найдена.");
-                return "errors/404";
-            }
-            return "redirect:/tasks";
-        } catch (Exception exception) {
-            model.addAttribute("message", exception.getMessage());
+        var isUpdated = taskService.update(task);
+        if (!isUpdated) {
+            model.addAttribute("message", "Заявка с указанным идентификатором не найдена.");
             return "errors/404";
         }
+        return "redirect:/tasks";
     }
 }

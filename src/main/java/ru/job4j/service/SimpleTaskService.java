@@ -31,6 +31,11 @@ public class SimpleTaskService implements TaskService {
     }
 
     @Override
+    public boolean switchStatusDone(int id, boolean done) {
+        return repository.switchStatusDone(id, done);
+    }
+
+    @Override
     public Optional<Task> findById(int id) {
         return repository.findById(id);
     }
