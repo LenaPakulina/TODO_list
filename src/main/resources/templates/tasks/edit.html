@@ -16,7 +16,7 @@
         <div class="row">
             <div class="col-3"></div>
             <div class="col-6">
-                <form class="mt-3" method="post" th:action="@{/task/edit}" th:object="${task}">
+                <form class="mt-3" method="post" th:action="@{/tasks/update}" th:object="${task}">
                     <input name="id" th:value="${task.id}" type="hidden">
                     <div class="mb-3" th:if="${error}">
                         <p class="text-danger" th:text="${error}"></p>
@@ -44,7 +44,7 @@
                     </div>
                     <div class="col-12">
                         <div class="row justify-content-center">
-                            <div class="col-3"><a class="btn btn-danger w-100" th:href="@{/}">Отмена</a></div>
+                            <div class="col-3"><a class="btn btn-danger w-100" th:href="@{/tasks}">Отмена</a></div>
                             <div class="col-3">
                                 <button class="btn btn-primary w-100" type="submit">Сохранить</button>
                             </div>
