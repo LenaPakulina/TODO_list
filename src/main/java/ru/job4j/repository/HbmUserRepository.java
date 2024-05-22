@@ -17,18 +17,20 @@ public class HbmUserRepository implements UserRepository {
     }
 
     @Override
-    public User save(User user) {
+    public Optional<User> save(User user) {
         Session session = sf.openSession();
+        Optional<User> answer = Optional.of(user);
         try {
             session.beginTransaction();
             session.save(user);
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
+            answer = Optional.empty();
         } finally {
             session.close();
         }
-        return user;
+        return answer;
     }
 
     @Override

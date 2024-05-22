@@ -11,6 +11,7 @@ import ru.job4j.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/users")
@@ -28,8 +29,12 @@ public class UserController {
 
     @PostMapping("/register")
     public String register(Model model, @ModelAttribute User user) {
-        userService.save(user);
-        return "redirect:/tasks";
+        Optional<User> result = userService.save(user);
+        if (result.isEmpty()) {
+            model.addAttribute("message", "Почта или пароль введены неверно");
+            return "errors/404";
+        }
+        return "redirect:/login";
     }
 
     @GetMapping("/login")
