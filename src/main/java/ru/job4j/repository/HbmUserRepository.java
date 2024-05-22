@@ -1,55 +1,41 @@
 package ru.job4j.repository;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import ru.job4j.model.Task;
 import ru.job4j.model.User;
+import ru.job4j.repository.utils.CrudRepository;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
 public class HbmUserRepository implements UserRepository {
-    private final SessionFactory sf;
+    private final CrudRepository repository;
 
-    public HbmUserRepository(SessionFactory sf) {
-        this.sf = sf;
+    public HbmUserRepository(CrudRepository repository) {
+        this.repository = repository;
     }
 
     @Override
     public Optional<User> save(User user) {
-        Session session = sf.openSession();
-        Optional<User> answer = Optional.of(user);
+        Optional<User> result = Optional.of(user);
         try {
-            session.beginTransaction();
-            session.save(user);
-            session.getTransaction().commit();
+            repository.run(session -> session.persist(user));
         } catch (Exception e) {
-            session.getTransaction().rollback();
-            answer = Optional.empty();
-        } finally {
-            session.close();
+            result = Optional.empty();
         }
-        return answer;
+        return result;
     }
 
     @Override
     public Optional<User> findByEmailAndPassword(String email, String password) {
-        Optional<User> answer = Optional.empty();
-        Session session = sf.openSession();
-        try {
-            session.beginTransaction();
-            answer = session.createQuery(
-                            "from User where login = :fLogin AND password = :fPassword", User.class)
-                    .setParameter("fLogin", email)
-                    .setParameter("fPassword", password)
-                    .uniqueResultOptional();
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
-        }
-        return answer;
+        return repository.optional(
+                "from User where login = :fLogin AND password = :fPassword", User.class,
+                Map.of(
+                        "fLogin", email,
+                        "fPassword", password
+                )
+        );
     }
 }
