@@ -5,7 +5,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.model.Task;
+import ru.job4j.model.User;
 import ru.job4j.service.TaskService;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/tasks")
@@ -43,7 +46,13 @@ public class TaskController {
     }
 
     @PostMapping("/add")
-    public String create(@ModelAttribute Task task, Model model) {
+    public String create(@ModelAttribute Task task, Model model, HttpServletRequest request) {
+        var user = (User) request.getSession().getAttribute("user");
+        if (user == null) {
+            model.addAttribute("message", "Не удалось сохранить задание. Необходима авторизация.");
+            return "errors/404";
+        }
+        task.setUser(user);
         taskService.save(task);
         return "redirect:/tasks";
     }

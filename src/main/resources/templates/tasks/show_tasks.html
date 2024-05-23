@@ -30,13 +30,14 @@
             </div>
         </div>
         <div class="row">
-            <div class="col mx-5">
+            <div class="col mx-9">
                 <table class="table  table-hover">
                     <thead class="thead-light">
                     <tr>
                         <th class="col-auto" scope="col">№</th>
                         <th class="col-auto" scope="col">Выполнено</th>
                         <th class="col-auto" scope="col">Время создания</th>
+                        <th class="col-auto" scope="col">Пользователь</th>
                         <th class="col-5" scope="col">Название</th>
                     </tr>
                     </thead>
@@ -52,6 +53,7 @@
                         </span>
                         </td>
                         <td th:text="${task.created}"/>
+                        <td th:text="${task.user.name}"/>
                         <td><a th:text="${task.title}" th:href="@{/tasks/{id}(id=${task.id})}"></a></td>
                     </tr>
                     </tbody>
