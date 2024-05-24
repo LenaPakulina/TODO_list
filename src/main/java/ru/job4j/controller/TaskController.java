@@ -7,10 +7,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.model.Task;
 import ru.job4j.model.User;
+import ru.job4j.repository.CategoryRepository;
+import ru.job4j.service.CategoryService;
 import ru.job4j.service.PriorityService;
 import ru.job4j.service.TaskService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/tasks")
@@ -19,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 public class TaskController {
     private final TaskService taskService;
     private final PriorityService priorityService;
+    private final CategoryService categoryService;
 
     @GetMapping()
     public String getAll(Model model) {
@@ -43,14 +48,18 @@ public class TaskController {
 
     @GetMapping("/add")
     public String getCreationPage(Model model) {
+        model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("priorities", priorityService.findAll());
         return "/tasks/add";
     }
 
     @PostMapping("/add")
-    public String create(@ModelAttribute Task task, Model model, @SessionAttribute("user") User user) {
+    public String create(@ModelAttribute Task task,
+                         Model model,
+                         @RequestParam Set<Integer> categoriesId,
+                         @SessionAttribute("user") User user) {
         task.setUser(user);
-        taskService.save(task);
+        taskService.save(task, categoriesId);
         return "redirect:/tasks";
     }
 
@@ -63,16 +72,6 @@ public class TaskController {
         }
         model.addAttribute("task", taskOptional.get());
         return "/tasks/one";
-    }
-
-    @PostMapping("/update")
-    public String update(@ModelAttribute Task task, Model model) {
-        var isUpdated = taskService.update(task);
-        if (!isUpdated) {
-            model.addAttribute("message", "Заявка с указанным идентификатором не найдена.");
-            return "errors/404";
-        }
-        return "redirect:/tasks";
     }
 
     @GetMapping("/delete/{id}")
@@ -103,7 +102,21 @@ public class TaskController {
             return "errors/404";
         }
         model.addAttribute("task", currTask.get());
+        model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("priorities", priorityService.findAll());
         return "/tasks/edit";
+    }
+
+    @PostMapping("/edit")
+    public String update(@ModelAttribute Task task, Model model,
+                         @RequestParam Set<Integer> categoriesId,
+                         @SessionAttribute("user") User user) {
+        task.setUser(user);
+        var isUpdated = taskService.update(task, categoriesId);
+        if (!isUpdated) {
+            model.addAttribute("message", "Заявка с указанным идентификатором не найдена.");
+            return "errors/404";
+        }
+        return "redirect:/tasks";
     }
 }

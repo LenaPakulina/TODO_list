@@ -31,6 +31,19 @@
                         </select>
                     </div>
                     <div class="mb-3">
+                        <label for="categoriesId">Категория</label>
+                        <select class="form-control custom-select" data-live-search="true" size="4"
+                                id="categoriesId"
+                                name="categoriesId"
+                                multiple="multiple"
+                        >
+                            <option th:each="category : ${categories}"
+                                    th:value="${category.id}"
+                                    th:text="${category.name}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label" for="description"><b>Описание задачи:</b></label>
                         <textarea class="form-control" id="description" name="description" placeholder="Нужно выполнить..."
                                   required rows="5"></textarea>

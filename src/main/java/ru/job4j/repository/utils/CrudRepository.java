@@ -26,6 +26,10 @@ public class CrudRepository {
         );
     }
 
+    public boolean runFunction(Function<Session, Boolean> function) {
+        return tx(function);
+    }
+
     public boolean runWithResult(String query, Map<String, Object> args) {
         Function<Session, Boolean> command = session -> {
             var sq = session

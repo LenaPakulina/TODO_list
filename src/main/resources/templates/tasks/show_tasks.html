@@ -39,6 +39,7 @@
                         <th class="col-auto" scope="col">Время создания</th>
                         <th class="col-auto" scope="col">Пользователь</th>
                         <th class="col-auto" scope="col">Приоритет</th>
+                        <th class="col-auto" scope="col">Категории</th>
                         <th class="col-5" scope="col">Название</th>
                     </tr>
                     </thead>
@@ -56,6 +57,11 @@
                         <td th:text="${task.created}"/>
                         <td th:text="${task.user.name}"/>
                         <td th:text="${task.priority.description}"/>
+                        <td>
+                        <span th:each="category, iterStat : ${task.categories}"
+                              th:text="${category.name} + ${!iterStat.last ? ', ' : ''}">
+                        </span>
+                        </td>
                         <td><a th:text="${task.title}" th:href="@{/tasks/{id}(id=${task.id})}"></a></td>
                     </tr>
                     </tbody>

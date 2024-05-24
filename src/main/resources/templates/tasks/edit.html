@@ -16,7 +16,7 @@
         <div class="row">
             <div class="col-3"></div>
             <div class="col-6">
-                <form class="mt-3" method="post" th:action="@{/tasks/update}" th:object="${task}">
+                <form class="mt-3" method="post" th:action="@{/tasks/edit}" th:object="${task}">
                     <input name="id" th:value="${task.id}" type="hidden">
                     <div class="mb-3" th:if="${error}">
                         <p class="text-danger" th:text="${error}"></p>
@@ -46,6 +46,20 @@
                     <div class="mb-3">
                         <label class="form-label"><b>Краткое название:</b></label>
                         <input type="text" class="form-control" id="title" name="title" placeholder="..." th:field="*{title}"/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="categoriesId"><b>Категория</b></label>
+                        <select class="form-control custom-select" data-live-search="true" size="4"
+                                id="categoriesId"
+                                name="categoriesId"
+                                multiple="multiple"
+                        >
+                            <option th:each="category : ${categories}"
+                                    th:selected="${task.categories.contains(category)}"
+                                    th:value="${category.id}"
+                                    th:text="${category.name}">
+                            </option>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="description"><b>Описание задачи:</b></label>

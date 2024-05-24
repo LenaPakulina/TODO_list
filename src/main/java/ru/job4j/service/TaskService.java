@@ -4,13 +4,14 @@ import ru.job4j.model.Task;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 
 public interface TaskService {
-    Task save(Task task);
+    Task save(Task task, Set<Integer> categories);
 
     boolean deleteById(int id);
 
-    boolean update(Task task);
+    boolean update(Task task, Set<Integer> categories);
 
     boolean switchStatusDone(int id, boolean done);
 

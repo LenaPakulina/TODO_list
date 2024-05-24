@@ -35,6 +35,12 @@
                             <span th:text="${task.priority.description}"></span>
                         </div>
                         <div class="row">
+                            <span class="font-weight-bold">Категории:&nbsp;</span>
+                            <span th:each="category, iterStat : ${task.categories}"
+                                  th:text="${category.name} + ${!iterStat.last ? ', ' : ''}">
+                            </span>
+                        </div>
+                        <div class="row">
                             <span class="font-weight-bold">Время создания:&nbsp;</span>
                             <span th:text="*{{created}}"></span>
                         </div>
