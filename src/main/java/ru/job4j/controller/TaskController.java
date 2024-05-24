@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/tasks")
+@SessionAttributes("user")
 public class TaskController {
     private final TaskService taskService;
 
@@ -46,12 +47,7 @@ public class TaskController {
     }
 
     @PostMapping("/add")
-    public String create(@ModelAttribute Task task, Model model, HttpServletRequest request) {
-        var user = (User) request.getSession().getAttribute("user");
-        if (user == null) {
-            model.addAttribute("message", "Не удалось сохранить задание. Необходима авторизация.");
-            return "errors/404";
-        }
+    public String create(@ModelAttribute Task task, Model model, @SessionAttribute("user") User user) {
         task.setUser(user);
         taskService.save(task);
         return "redirect:/tasks";
