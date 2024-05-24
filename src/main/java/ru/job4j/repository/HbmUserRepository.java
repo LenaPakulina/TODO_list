@@ -1,5 +1,6 @@
 package ru.job4j.repository;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 import ru.job4j.model.Task;
@@ -9,6 +10,7 @@ import ru.job4j.repository.utils.CrudRepository;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @Repository
 public class HbmUserRepository implements UserRepository {
     private final CrudRepository repository;
@@ -19,13 +21,13 @@ public class HbmUserRepository implements UserRepository {
 
     @Override
     public Optional<User> save(User user) {
-        Optional<User> result = Optional.of(user);
         try {
             repository.run(session -> session.persist(user));
+            return Optional.of(user);
         } catch (Exception e) {
-            result = Optional.empty();
+            log.error("Failed to save user.");
         }
-        return result;
+        return Optional.empty();
     }
 
     @Override

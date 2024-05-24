@@ -31,8 +31,8 @@ public class UserController {
     public String register(Model model, @ModelAttribute User user) {
         Optional<User> result = userService.save(user);
         if (result.isEmpty()) {
-            model.addAttribute("message", "Почта или пароль введены неверно");
-            return "errors/404";
+            model.addAttribute("error", "Не удалось сохранить пользователя.");
+            return "/users/register";
         }
         return "redirect:/login";
     }
