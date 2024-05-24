@@ -32,12 +32,13 @@ public class HbmTaskRepository implements TaskRepository {
     @Override
     public boolean update(Task task) {
         return crudRepository.runWithResult(
-                "UPDATE Task SET description = :fDesk, done = :fDone, title = :fTitle WHERE id = :fId",
+                "UPDATE Task SET description = :fDesk, done = :fDone, title = :fTitle, priority_id = :fPriority WHERE id = :fId",
                 Map.of(
                         "fId", task.getId(),
                         "fDesk", task.getDescription(),
                         "fDone", task.isDone(),
-                        "fTitle", task.getTitle()
+                        "fTitle", task.getTitle(),
+                        "fPriority", task.getPriority()
                 )
         );
     }
@@ -56,14 +57,14 @@ public class HbmTaskRepository implements TaskRepository {
     @Override
     public Optional<Task> findById(int id) {
         return crudRepository.optional(
-                "from Task where id = :fId", Task.class,
+                "from Task t JOIN FETCH t.priority where t.id = :fId", Task.class,
                 Map.of("fId", id)
         );
     }
 
     @Override
     public Collection<Task> findAll() {
-        return crudRepository.query("from Task order by id asc", Task.class);
+        return crudRepository.query("from Task t JOIN FETCH t.priority ORDER BY t.id ASC", Task.class);
     }
 
     @Override
@@ -77,7 +78,7 @@ public class HbmTaskRepository implements TaskRepository {
     }
 
     private Collection<Task> findTaskByStatus(boolean isDone) {
-        return crudRepository.query("from Task WHERE done = :fDone ORDER BY id ASC", Task.class,
+        return crudRepository.query("from Task t JOIN FETCH t.priority WHERE t.done = :fDone ORDER BY t.id ASC", Task.class,
                 Map.of("fDone", isDone)
         );
     }

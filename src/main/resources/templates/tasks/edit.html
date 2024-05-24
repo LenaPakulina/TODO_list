@@ -33,6 +33,17 @@
                         <div th:inline="text">Создана: [[*{{created}}]]</div>
                     </div>
                     <div class="mb-3">
+                        <label class="font-weight-bold d-inline-block">Приоритет:
+                            <select class="form-control custom-select" id="priority" name="priority.id">
+                                <option th:each="priority : ${priorities}"
+                                        th:selected="${priority.id == task.priority.id}"
+                                        th:value="${priority.id}"
+                                        th:text="${priority.description}">
+                                </option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label"><b>Краткое название:</b></label>
                         <input type="text" class="form-control" id="title" name="title" placeholder="..." th:field="*{title}"/>
                     </div>

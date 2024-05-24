@@ -31,6 +31,10 @@
                             <div class="font-weight-bold text-primary" th:unless="${task.done}">Не выполнено</div>
                         </div>
                         <div class="row">
+                            <span class="font-weight-bold">Приоритет:&nbsp;</span>
+                            <span th:text="${task.priority.description}"></span>
+                        </div>
+                        <div class="row">
                             <span class="font-weight-bold">Время создания:&nbsp;</span>
                             <span th:text="*{{created}}"></span>
                         </div>

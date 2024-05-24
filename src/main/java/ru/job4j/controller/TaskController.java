@@ -1,11 +1,13 @@
 package ru.job4j.controller;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.model.Task;
 import ru.job4j.model.User;
+import ru.job4j.service.PriorityService;
 import ru.job4j.service.TaskService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,12 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/tasks")
 @SessionAttributes("user")
+@AllArgsConstructor
 public class TaskController {
     private final TaskService taskService;
-
-    public TaskController(TaskService taskService) {
-        this.taskService = taskService;
-    }
+    private final PriorityService priorityService;
 
     @GetMapping()
     public String getAll(Model model) {
@@ -43,6 +43,7 @@ public class TaskController {
 
     @GetMapping("/add")
     public String getCreationPage(Model model) {
+        model.addAttribute("priorities", priorityService.findAll());
         return "/tasks/add";
     }
 
@@ -102,6 +103,7 @@ public class TaskController {
             return "errors/404";
         }
         model.addAttribute("task", currTask.get());
+        model.addAttribute("priorities", priorityService.findAll());
         return "/tasks/edit";
     }
 }
