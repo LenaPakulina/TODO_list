@@ -20,10 +20,12 @@ public class SimpleTaskService implements TaskService {
     private final CategoryRepository categoryRepository;
 
     private void updateCategories(Task task, Set<Integer> categories) {
+        Collection<Category> allCategories = categoryRepository.findAll();
         Set<Category> result = new HashSet<>();
-        for (Integer elem : categories) {
-            Optional<Category> category = categoryRepository.findById(elem);
-            category.ifPresent(result::add);
+        for (Category category : allCategories) {
+            if (categories.contains(category.getId())) {
+                result.add(category);
+            }
         }
         task.setCategories(result);
     }
