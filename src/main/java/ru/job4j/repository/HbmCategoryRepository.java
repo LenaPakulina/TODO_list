@@ -8,6 +8,7 @@ import ru.job4j.repository.utils.CrudRepository;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 @AllArgsConstructor
@@ -23,6 +24,13 @@ public class HbmCategoryRepository implements CategoryRepository {
     public Optional<Category> findById(int id) {
         return crudRepository.optional("from Category WHERE id = :fId", Category.class,
                 Map.of("fId", id)
+        );
+    }
+
+    @Override
+    public Collection<Category> getCategoriesByIds(Set<Integer> ids) {
+        return crudRepository.query("from Category WHERE id IN :ids ORDER BY id ASC", Category.class,
+                Map.of("ids", ids)
         );
     }
 }

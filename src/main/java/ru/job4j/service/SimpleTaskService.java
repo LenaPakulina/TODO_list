@@ -20,13 +20,8 @@ public class SimpleTaskService implements TaskService {
     private final CategoryRepository categoryRepository;
 
     private void updateCategories(Task task, Set<Integer> categories) {
-        Collection<Category> allCategories = categoryRepository.findAll();
-        Set<Category> result = new HashSet<>();
-        for (Category category : allCategories) {
-            if (categories.contains(category.getId())) {
-                result.add(category);
-            }
-        }
+        Collection<Category> allCategories = categoryRepository.getCategoriesByIds(categories);
+        Set<Category> result = Set.copyOf(allCategories);
         task.setCategories(result);
     }
 
