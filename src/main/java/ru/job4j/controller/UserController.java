@@ -2,33 +2,38 @@ package ru.job4j.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import ru.job4j.controller.utils.TimeZoneStorage;
 import ru.job4j.model.User;
 import ru.job4j.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TimeZone;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
+    private final TimeZoneStorage timeZoneStorage;
 
-    public UserController(UserService service) {
-        this.userService = service;
+    public UserController(UserService userService, TimeZoneStorage timeZoneStorage) {
+        this.userService = userService;
+        this.timeZoneStorage = timeZoneStorage;
     }
 
     @GetMapping("/register")
-    public String getRegistrationPage() {
+    public String getRegistrationPage(Model model) {
+        model.addAttribute("defaultTimeZoneID", timeZoneStorage.getDefaultParams().getID());
+        model.addAttribute("timeZones", timeZoneStorage.getTimeZoneElements());
         return "users/register";
     }
 
     @PostMapping("/register")
-    public String register(Model model, @ModelAttribute User user) {
+    public String register(Model model, @ModelAttribute User user, @RequestParam String timeZone) {
+        user.setTimezone(timeZone);
         Optional<User> result = userService.save(user);
         if (result.isEmpty()) {
             model.addAttribute("error", "Не удалось сохранить пользователя.");

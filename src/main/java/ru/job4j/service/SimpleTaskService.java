@@ -8,10 +8,9 @@ import ru.job4j.repository.CategoryRepository;
 import ru.job4j.repository.TaskRepository;
 
 import javax.persistence.criteria.CriteriaBuilder;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -39,8 +38,6 @@ public class SimpleTaskService implements TaskService {
     @Override
     public boolean update(Task task, Set<Integer> categories) {
         updateCategories(task, categories);
-        boolean answer = repository.update(task);
-        Optional<Task> sdf = repository.findById(task.getId());
         return repository.update(task);
     }
 
@@ -51,21 +48,46 @@ public class SimpleTaskService implements TaskService {
 
     @Override
     public Optional<Task> findById(int id) {
-        return repository.findById(id);
+        Optional<Task> optionalTask = repository.findById(id);
+        if (optionalTask.isPresent()) {
+            Task task = optionalTask.get();
+            setFixTimeZone(task);
+            optionalTask = Optional.of(task);
+        }
+        return optionalTask;
     }
 
     @Override
     public Collection<Task> findAll() {
-        return repository.findAll();
+        Collection<Task> sdf = repository.findAll();
+        return setFixTimeZone(sdf);
     }
 
     @Override
     public Collection<Task> findDoneTasks() {
-        return repository.findDoneTasks();
+        return setFixTimeZone(repository.findDoneTasks());
     }
 
     @Override
     public Collection<Task> findNewTasks() {
-        return repository.findNewTasks();
+        return setFixTimeZone(repository.findNewTasks());
+    }
+
+    public void setFixTimeZone(Task task) {
+        String timezone = task.getUser().getTimezone();
+        if (timezone == null || timezone.isEmpty()) {
+            timezone = TimeZone.getDefault().getID();
+        }
+        ZonedDateTime localTime = task.getCreated()
+                .atZone(ZoneId.of("UTC"))
+                .withZoneSameInstant(ZoneId.of(timezone));
+        task.setCreated(localTime.toLocalDateTime());
+    }
+
+    public Collection<Task> setFixTimeZone(Collection<Task> tasks) {
+        for (Task task: tasks) {
+            setFixTimeZone(task);
+        }
+        return tasks;
     }
 }
